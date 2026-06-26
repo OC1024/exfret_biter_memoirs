@@ -1,7 +1,9 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.2.1
+Version: 1.3.0
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fixed the missing locale on the custominput
+    - Made the "Biter Info" panel localizable
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 2025-04-27

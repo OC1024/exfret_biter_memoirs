@@ -6,7 +6,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 1,
         setting_type = "runtime-global",
-        default_value = 0.25
+        default_value = 0.25 -- Do we really want this with Biter Info? It *will* make ages wrong
     },
     {
         type = "double-setting",
