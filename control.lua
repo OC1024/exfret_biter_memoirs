@@ -1,3 +1,4 @@
+local util = require("util")
 require("names")
 require("scripts/show_biter_stats")
 require("scripts/initialize_unit")
@@ -130,28 +131,39 @@ end, {
 
 ---@param event EventData.CustomInputEvent
 script.on_event("show-biter-info", function(event)
-    if not game.players[event.player_index].gui.screen.biter_stats_panel then
-        if event.selected_prototype ~= nil and event.selected_prototype.derived_type == "unit" then
-            local search_distance = 10
-            local possible_selections = game.players[event.player_index].surface.find_entities_filtered({position = event.cursor_position, radius = search_distance, type = "unit"})
-            ---@type LuaEntity
-            local closest_unit
-            local closest_unit_distance_squared = search_distance * search_distance
-            for _, possible_selection in pairs(possible_selections) do
-                local x_diff = possible_selection.position.x - event.cursor_position.x
-                local y_diff = possible_selection.position.y - event.cursor_position.y
-                if x_diff * x_diff + y_diff * y_diff < closest_unit_distance_squared then
-                    closest_unit_distance_squared = x_diff * x_diff + y_diff * y_diff
-                    closest_unit = possible_selection
-                end
-            end
+    local player = game.get_player(event.player_index)
+    ---@cast player -?
 
-            if closest_unit ~= nil then
-                validate_unit(closest_unit, closest_unit.unit_number)
-                show_biter_gui(game.players[event.player_index], closest_unit)
-            end
-        end
-    else
-        game.players[event.player_index].gui.screen.biter_stats_panel.destroy()
+    local panel = player.gui.screen.biter_stats_panel
+    if panel then
+        panel.destroy()
+        return
     end
+
+    local selected = player.selected
+    if selected and selected.type == "unit" then 
+        validate_unit(selected, selected.unit_number--[[@cast -?]])
+        show_biter_gui(player, selected)
+        return
+    end
+
+    local cursor = event.cursor_position
+    ---@type LuaEntity
+    local closest_unit
+    local closest_distance = math.huge
+    for _, possible_selection in pairs(
+        player.surface.find_entities_filtered{
+            position = cursor, radius = 5, type = "unit"
+        }
+    ) do
+        local test_distance = util.distance(cursor, possible_selection.position)
+        if test_distance < closest_distance then
+            closest_distance = test_distance
+            closest_unit = possible_selection
+        end
+    end
+
+    if not closest_unit then return end
+    validate_unit(closest_unit, closest_unit.unit_number--[[@cast -?]])
+    show_biter_gui(game.players[event.player_index], closest_unit)
 end)
