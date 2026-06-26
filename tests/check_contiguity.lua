@@ -37,7 +37,7 @@ check_pass(false, "0 indexed array", {
 	[0] = true,
 	[1] = true,
 	[2] = true,
-})
+}--[[@as any[] ]])
 -- for i = 1, 50 do
 -- 	tmp[math.random(1030)] = nil
 tmp[324] = nil

@@ -1,13 +1,16 @@
----@class MemoirGlobal
+---@class (partial) MemoirGlobal
 ---@field biter_names name_info[]
 ---@field biter_name_count integer
 ---@field biter_memoirs MemoirString[]
 ---@field biter_memoir_count integer
 
+---@alias NonNilableLocalisedString string|number|boolean|LuaObject|(LocalisedString[])
+
+
 ---@class name_info
 ---@field name string
 ---@field pronouns pronoun_id
----@field special_memoir? LocalisedString
+---@field special_memoir? NonNilableLocalisedString
 ---@field color? Color
 
 ---@enum pronoun_id
@@ -22,35 +25,34 @@ PRONOUNS = {
     female = 2,
 }
 
+---@class MemoirLocaleString
+---@field [1] string Locale Key
+---@field [2] string? The name (will be autofilled)
+---@field [3] pronoun_id? The pronoun (will be autofilled)
+---@field [4]? NonNilableLocalisedString
+---@field [5]? NonNilableLocalisedString
+---@field [6]? NonNilableLocalisedString
+---@field [7]? NonNilableLocalisedString
+---@field [8]? NonNilableLocalisedString
+---@field [9]? NonNilableLocalisedString
+---@field [10]? NonNilableLocalisedString
+---@field [11]? NonNilableLocalisedString
+---@field [12]? NonNilableLocalisedString
+---@field [13]? NonNilableLocalisedString
+---@field [14]? NonNilableLocalisedString
+---@field [15]? NonNilableLocalisedString
+---@field [16]? NonNilableLocalisedString
+---@field [17]? NonNilableLocalisedString
+---@field [18]? NonNilableLocalisedString
+---@field [19]? NonNilableLocalisedString
+---@field [20]? NonNilableLocalisedString
+---@field [21]? NonNilableLocalisedString
+
 --- The name will get prepended if it's a string
 --- If it's a LocalisedString on the other hand,
 --- the first two parameters (aka the 2nd and 3rd indexes)
 --- *Will* get squashed by the name and pronoun id.
----@alias MemoirString
----| string
----| {
----     [1]:string, -- Locale Key
----     [2]:string?, -- The name (will be autofilled)
----     [3]:pronoun_id?, -- The pronoun (will be autofilled)
----     [4]:LocalisedString, -- Etc
----     [5]:LocalisedString, -- Etc
----     [6]:LocalisedString, -- Etc
----     [7]:LocalisedString, -- Etc
----     [8]:LocalisedString, -- Etc
----     [9]:LocalisedString, -- Etc
----     [10]:LocalisedString, -- Etc
----     [11]:LocalisedString, -- Etc
----     [12]:LocalisedString, -- Etc
----     [13]:LocalisedString, -- Etc
----     [14]:LocalisedString, -- Etc
----     [15]:LocalisedString, -- Etc
----     [16]:LocalisedString, -- Etc
----     [17]:LocalisedString, -- Etc
----     [18]:LocalisedString, -- Etc
----     [19]:LocalisedString, -- Etc
----     [20]:LocalisedString, -- Etc
----     [21]:LocalisedString, -- Etc
---- }
+---@alias MemoirString string|MemoirLocaleString
 
 ---@nodiscard
 ---@return name_info[]
@@ -433,7 +435,7 @@ function default_memoirs(count) -- MARK: Memoirs
     ---@type MemoirString[]
     local memoirs = {}
     for i = 1, count do
-        memoirs[i] = {"biter-memoirs."..i}
+        memoirs[i] = {"biter-memoirs."..i}--[[@as MemoirLocaleString]]
     end
     return memoirs
 end
@@ -450,9 +452,11 @@ function load_defaults()
     storage.biter_memoir_count = DEFAULT_MEMOIR_COUNT
     storage.biter_memoirs = default_memoirs(DEFAULT_MEMOIR_COUNT)
 
+    ---@diagnostic disable-next-line: inject-field
     ---@deprecated Now contained in name_info
     ---@type nil
     storage.biter_name_pronouns = nil
+    ---@diagnostic disable-next-line: inject-field
     ---@deprecated Now contained in name_info
     ---@type nil
     storage.biter_memoirs_special = nil

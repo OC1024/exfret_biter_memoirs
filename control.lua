@@ -4,7 +4,7 @@ require("scripts/initialize_unit")
 require("scripts/memoir")
 require("scripts/remote_interface")
 
----@class MemoirGlobal
+---@class (partial) MemoirGlobal
 ---@field last_memoir_tick integer
 ---@field unit_info table<integer,unit_info>
 storage = {}
@@ -16,8 +16,6 @@ storage = {}
 ---@field birth integer
 ---@field nametag? LuaRenderObject
 ---@field nametag_id? integer Only to make it optional
-
----@class unit_info
 local dep = {
 ---@deprecated use `nametag`
 ---@see unit_info.nametag
@@ -36,7 +34,7 @@ local function ensure_globals()
 end
 
 ---@param entity LuaEntity
----@param unit_number integer
+---@param unit_number uint64
 function validate_unit(entity, unit_number)
 
     --- Remove entry if the entity is invalid in any way
@@ -53,7 +51,9 @@ function validate_unit(entity, unit_number)
     end
 
     if not table_info.name then
-        table_info.name = storage.biter_names[math.random(1, #storage.biter_names)]
+        local name = storage.biter_names[math.random(1, storage.biter_name_count)]
+        ---@cast name -?
+        table_info.name = name
     end
     if not table_info.entity then
         table_info.entity = entity
@@ -65,7 +65,7 @@ function validate_unit(entity, unit_number)
         local name = table_info.name
         table_info.nametag = rendering.draw_text{
             text = name.name,
-            color = name.color or {1,1,1},
+            color = name.color or {1,1,1,1},
             surface = entity.surface_index,
             target = entity,
             alignment = "center",

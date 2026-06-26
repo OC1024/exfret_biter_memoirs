@@ -1,9 +1,10 @@
----@param event {entity:LuaEntity, keep_hidden:boolean}
+---@param event {entity:LuaEntity, keep_hidden:boolean}|EventData.on_entity_spawned
 function initialize_unit(event)
     local entity = event.entity
     if entity.type ~= "unit" then return end
 
-    local biter_name = storage.biter_names[math.random(#storage.biter_names)]
+    local biter_name = storage.biter_names[math.random(storage.biter_name_count)]
+    ---@cast biter_name -?
     local show_name, renderObj = false, nil
 
     if (not event.keep_hidden)
@@ -11,7 +12,7 @@ function initialize_unit(event)
         show_name = true
         renderObj = rendering.draw_text{
             text = biter_name.name,
-            color = biter_name.color or {1,1,1},
+            color = biter_name.color or {1,1,1,1},
             surface = entity.surface_index,
             target = entity,
             alignment = "center",
