@@ -14,7 +14,7 @@ storage = {}
 ---@field show_name boolean
 ---@field name name_info
 ---@field entity LuaEntity
----@field birth integer
+---@field birth MapTick
 ---@field nametag? LuaRenderObject
 ---@field nametag_id? integer Only to make it optional
 local dep = {
