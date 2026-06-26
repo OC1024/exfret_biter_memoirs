@@ -4,6 +4,7 @@ Date: ????
   Bugfixes:
     - Fixed the missing locale on the custominput
     - Made the "Biter Info" panel localizable
+    - Removed the chance to get legendary item as biter name when the legendary quality doesn't exist
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 2025-04-27

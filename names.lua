@@ -56,9 +56,10 @@ PRONOUNS = {
 
 ---@nodiscard
 ---@return name_info[]
+---@return integer name_count
 function default_names()
     ---@type name_info[]
-    return { --MARK: Names
+    local names = { --MARK: Names
         {pronouns = PRONOUNS.male,   name = "George"},
         {pronouns = PRONOUNS.female, name = "Sue"},
         {pronouns = PRONOUNS.female, name = "Mary"},
@@ -378,7 +379,6 @@ function default_names()
         {pronouns = PRONOUNS.male,   name = "Luca"},
         {pronouns = PRONOUNS.any,    name = "PennyJim", special_memoir = {"biter-memoirs-special.PennyJim"}},
         {pronouns = PRONOUNS.male,   name = "Fireball", special_memoir = {"biter-memoirs-special.Fireball"}},
-        {pronouns = PRONOUNS.any,    name = "[item=depleted-uranium-fuel-cell,quality=legendary]"},
         {pronouns = PRONOUNS.male,   name = "Thomas"},
         {pronouns = PRONOUNS.female, name = "Lua"},
         {pronouns = PRONOUNS.female, name = "Loli"},
@@ -426,6 +426,17 @@ function default_names()
         {pronouns = PRONOUNS.male,   name = "Mr. Whitebug", special_memoir = {"biter-memoirs-special.Mr. Whitebug"}},
         {pronouns = PRONOUNS.any,    name = "Skullbearer", special_memoir = {"biter-memoirs-special.Skullbearer"}},
     }
+
+    local name_count = #names
+
+    --MARK: Conditional Names
+
+    if prototypes.quality["legendary"] then
+        name_count = name_count + 1
+        names[name_count] = {pronouns = PRONOUNS.any,    name = "[item=depleted-uranium-fuel-cell,quality=legendary]"}
+    end
+
+    return names, name_count
 end
 
 ---@nodiscard
@@ -444,9 +455,7 @@ end
 DEFAULT_MEMOIR_COUNT = 116
 function load_defaults()
     -- All the names, pronouns, and special memoirs
-    storage.biter_names = default_names()
-    -- Don't calculate this so often, just store it.
-    storage.biter_name_count = #storage.biter_names
+    storage.biter_names, storage.biter_name_count = default_names()
 
     --- The numbers here should match the highest locale number
     storage.biter_memoir_count = DEFAULT_MEMOIR_COUNT
