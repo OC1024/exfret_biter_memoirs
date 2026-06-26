@@ -52,7 +52,7 @@ local function validate_array_contiguity(array, validate_func)
 end
 
 ---@diagnostic disable-next-line: no-unknown
-if __DebugAdapter then
+if debugadapter then
 	check_contiguity = validate_array_contiguity
 	require("tests/check_contiguity")
 end
